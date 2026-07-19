@@ -30,18 +30,23 @@ const CONFIG = {
         centerY: 1101
     },
 
-    //======================================================
-    // MAZE
-    // areaWidth/areaHeight = luas AREA labirin di dalam map
-    // (dipakai isInsideMaze() & scanObjectMap() sebagai batas),
-    // BUKAN ukuran gambar. Jangan dipakai untuk render/drawImage.
-    //======================================================
-    maze: {
-        areaWidth: 1000,
-        areaHeight: 1000,
-        centerX: 615.5,
-        centerY: 1080.5
-    },
+//======================================================
+// MAZE
+// Area permainan menggunakan ukuran penuh asset map.
+// Semua sistem (collision, object scan, movement)
+// memakai koordinat asli gambar 1238 x 2201.
+//======================================================
+maze: {
+
+    areaWidth: 1238,
+
+    areaHeight: 2201,
+
+    centerX: 619,
+
+    centerY: 1101
+
+},
 
     //======================================================
     // GAME
