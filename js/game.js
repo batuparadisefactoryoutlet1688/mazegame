@@ -71,7 +71,11 @@ function createHiddenCanvas() {
     ENGINE.hiddenCanvas.width = CONFIG.canvas.width;
     ENGINE.hiddenCanvas.height = CONFIG.canvas.height;
 
-    ENGINE.hiddenCtx = ENGINE.hiddenCanvas.getContext("2d");
+    // PERFORMANCE FIX: willReadFrequently:true memberi tahu browser
+    // dari awal bahwa canvas ini akan sering dibaca pixel-nya
+    // (getImageData), sehingga browser bisa pakai jalur render yang
+    // lebih cepat untuk itu (menghilangkan warning di console juga).
+    ENGINE.hiddenCtx = ENGINE.hiddenCanvas.getContext("2d", { willReadFrequently: true });
 
 }
 
