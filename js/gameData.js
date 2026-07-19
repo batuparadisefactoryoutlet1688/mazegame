@@ -34,7 +34,12 @@ const GAME_DATA = {
 
         speed: 3,
 
-        moving: false
+        moving: false,
+
+        // FITUR BARU: arah hadap rocket, dipakai ui.js buat rotasi
+        // sprite. Default "right" karena rocket.png defaultnya
+        // menghadap kanan.
+        facing: "right"
 
     },
 
@@ -115,6 +120,7 @@ function resetGameData() {
     GAME_DATA.rocket.x = 0;
     GAME_DATA.rocket.y = 0;
     GAME_DATA.rocket.moving = false;
+    GAME_DATA.rocket.facing = "right";
 
     GAME_DATA.finish.x = 0;
     GAME_DATA.finish.y = 0;
