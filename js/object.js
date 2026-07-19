@@ -76,17 +76,26 @@ function loadObjectMap(){
 
     );
 
+    // BUG FIX: asset map*_object.png sekarang full canvas size
+    // (1238 x 2201), BUKAN 1000 x 1000 seperti asumsi lama.
+    // Sebelumnya gambar ini di-scale paksa ke kotak maze
+    // (CONFIG.maze.width/height), padahal posisi warna start/
+    // finish/portal di dalam gambar sudah berupa koordinat
+    // canvas asli. Akibatnya semua koordinat object ikut
+    // ter-squish dan bergeser dari posisi yang seharusnya.
+    // Sekarang digambar 1:1 di (0,0) tanpa scaling.
+
     ENGINE.hiddenCtx.drawImage(
 
         image,
 
-        CONFIG.maze.centerX - (CONFIG.maze.width/2),
+        0,
 
-        CONFIG.maze.centerY - (CONFIG.maze.height/2),
+        0,
 
-        CONFIG.maze.width,
+        CONFIG.canvas.width,
 
-        CONFIG.maze.height
+        CONFIG.canvas.height
 
     );
 
@@ -211,5 +220,3 @@ function readObjectMap(){
     updateMask();
 
 }
-
-
