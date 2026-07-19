@@ -102,19 +102,22 @@ function isWalkable(x,y){
 
     }
 
-    const pixel = getMaskPixel(x,y);
+const pixel = getMaskPixel(x,y);
 
-    return (
+console.log(
+    "MASK",
+    Math.round(x),
+    Math.round(y),
+    pixel[0],
+    pixel[1],
+    pixel[2]
+);
 
-        pixel[0] > 250 &&
-
-        pixel[1] > 250 &&
-
-        pixel[2] > 250
-
-    );
-
-}
+return (
+    pixel[0] > 250 &&
+    pixel[1] > 250 &&
+    pixel[2] > 250
+);
 
 //==========================================================
 // CHECK COLLISION
