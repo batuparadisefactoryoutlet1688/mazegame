@@ -58,19 +58,58 @@ function drawMap() {
 }
 
 //==========================================================
+// ROCKET FACING ANGLE
+// (FITUR BARU: rocket.png defaultnya menghadap KANAN, jadi
+// "right" = 0 radian, arah lain dirotasi relatif dari situ)
+//==========================================================
+
+function getRocketAngle() {
+
+    switch (GAME_DATA.rocket.facing) {
+
+        case "up":
+            return -Math.PI / 2;
+
+        case "down":
+            return Math.PI / 2;
+
+        case "left":
+            return Math.PI;
+
+        case "right":
+        default:
+            return 0;
+
+    }
+
+}
+
+//==========================================================
 // DRAW ROCKET
 // (BUG FIX: sebelumnya hilang dari ui.js)
+// FITUR BARU: sprite dirotasi sesuai arah gerak rocket.
 //==========================================================
 
 function drawRocket() {
 
-    drawImageCenter(
+    if (!ASSETS.sprites.rocket) return;
+
+    const angle = getRocketAngle();
+
+    ENGINE.ctx.save();
+
+    ENGINE.ctx.translate(GAME_DATA.rocket.x, GAME_DATA.rocket.y);
+    ENGINE.ctx.rotate(angle);
+
+    ENGINE.ctx.drawImage(
         ASSETS.sprites.rocket,
-        GAME_DATA.rocket.x,
-        GAME_DATA.rocket.y,
+        -GAME_DATA.rocket.width / 2,
+        -GAME_DATA.rocket.height / 2,
         GAME_DATA.rocket.width,
         GAME_DATA.rocket.height
     );
+
+    ENGINE.ctx.restore();
 
 }
 
