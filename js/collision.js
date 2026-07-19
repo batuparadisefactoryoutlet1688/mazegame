@@ -122,12 +122,16 @@ function isWalkable(x,y){
 
 function checkCollision(nextX,nextY){
 
-    const halfW =
+    console.log(
+        "CHECK COLLISION =>",
+        "nextX:", nextX,
+        "nextY:", nextY
+    );
 
+    const halfW =
         GAME_DATA.rocket.width / 2;
 
     const halfH =
-
         GAME_DATA.rocket.height / 2;
 
     //------------------------------------------------------
@@ -135,16 +139,13 @@ function checkCollision(nextX,nextY){
     //------------------------------------------------------
 
     if(
-
         !isWalkable(
-
             nextX,
-
             nextY-halfH
-
         )
-
     ){
+
+        console.log("BLOCK : TOP");
 
         return false;
 
@@ -155,16 +156,13 @@ function checkCollision(nextX,nextY){
     //------------------------------------------------------
 
     if(
-
         !isWalkable(
-
             nextX,
-
             nextY+halfH
-
         )
-
     ){
+
+        console.log("BLOCK : BOTTOM");
 
         return false;
 
@@ -175,16 +173,13 @@ function checkCollision(nextX,nextY){
     //------------------------------------------------------
 
     if(
-
         !isWalkable(
-
             nextX-halfW,
-
             nextY
-
         )
-
     ){
+
+        console.log("BLOCK : LEFT");
 
         return false;
 
@@ -195,20 +190,19 @@ function checkCollision(nextX,nextY){
     //------------------------------------------------------
 
     if(
-
         !isWalkable(
-
             nextX+halfW,
-
             nextY
-
         )
-
     ){
+
+        console.log("BLOCK : RIGHT");
 
         return false;
 
     }
+
+    console.log("COLLISION OK");
 
     return true;
 
