@@ -80,6 +80,15 @@ function updateMovement() {
 
     if (!GAME_DATA.game.playing) return;
 
+    // FITUR BARU: update arah hadap rocket SEBELUM cek collision,
+    // supaya rocket langsung menghadap arah tombol yang ditekan
+    // meskipun sedang mentok tembok (bukan cuma saat berhasil gerak).
+
+    if (INPUT.up) GAME_DATA.rocket.facing = "up";
+    if (INPUT.down) GAME_DATA.rocket.facing = "down";
+    if (INPUT.left) GAME_DATA.rocket.facing = "left";
+    if (INPUT.right) GAME_DATA.rocket.facing = "right";
+
     if (INPUT.up) moveUp();
     if (INPUT.down) moveDown();
     if (INPUT.left) moveLeft();
