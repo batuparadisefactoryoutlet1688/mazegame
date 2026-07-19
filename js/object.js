@@ -12,37 +12,17 @@ File    : object.js
 // OBJECT COLOR
 //==========================================================
 
-function colorMatch(pixel, color){
+function colorMatch(r, g, b, color){
 
     return (
 
-        pixel[0] === color.r &&
+        r === color.r &&
 
-        pixel[1] === color.g &&
+        g === color.g &&
 
-        pixel[2] === color.b
+        b === color.b
 
     );
-
-}
-
-//==========================================================
-// GET PIXEL
-//==========================================================
-
-function getPixel(x, y){
-
-    return ENGINE.hiddenCtx.getImageData(
-
-        x,
-
-        y,
-
-        1,
-
-        1
-
-    ).data;
 
 }
 
@@ -99,13 +79,16 @@ function loadObjectMap(){
 //==========================================================
 // FIND OBJECT
 //==========================================================
-// Scan SELURUH gambar (0,0 sampai CONFIG.map.width/height),
-// tidak lagi dibatasi kotak maze -> marker boleh diletakkan di
-// mana saja dan ukuran berapa saja.
+// PERFORMANCE FIX (penyebab delay 5-10 detik / bahkan 1 menit
+// saat klik Start): sebelumnya getImageData() dipanggil TERPISAH
+// untuk setiap pixel (~2.7 juta kali untuk gambar 1238x2201).
+// Setiap panggilan getImageData() punya overhead transfer data
+// GPU -> CPU, jadi kalau dipanggil jutaan kali, sangat lambat.
 //
-// Posisi tiap marker dihitung pakai CENTROID (rata-rata semua
-// pixel yang cocok warnanya), lalu dibulatkan (Math.round) supaya
-// hasilnya selalu integer, konsisten dengan koordinat pixel lain.
+// FIX: getImageData() dipanggil SEKALI SAJA untuk seluruh gambar,
+// hasilnya berupa array pixel besar (data), lalu kita cukup
+// loop & baca array itu di memori (jauh lebih cepat, harusnya
+// selesai dalam hitungan milidetik, bukan detik/menit).
 //==========================================================
 
 function scanObjectMap(){
@@ -118,13 +101,29 @@ function scanObjectMap(){
 
     const portalBColor = CONFIG.objectColor.portalB;
 
-    const startX = 0;
+    const width = CONFIG.map.width;
 
-    const startY = 0;
+    const height = CONFIG.map.height;
 
-    const endX = CONFIG.map.width;
+    //------------------------------------------------------
+    // AMBIL SEMUA PIXEL SEKALI SAJA
+    //------------------------------------------------------
 
-    const endY = CONFIG.map.height;
+    const imageData =
+
+        ENGINE.hiddenCtx.getImageData(
+
+            0,
+
+            0,
+
+            width,
+
+            height
+
+        );
+
+    const data = imageData.data;
 
     //------------------------------------------------------
     // ACCUMULATOR (buat hitung centroid tiap marker)
@@ -142,17 +141,23 @@ function scanObjectMap(){
 
     };
 
-    for(let y = startY; y < endY; y++){
+    for(let y = 0; y < height; y++){
 
-        for(let x = startX; x < endX; x++){
+        for(let x = 0; x < width; x++){
 
-            const pixel = getPixel(x,y);
+            const i = (y * width + x) * 4;
+
+            const r = data[i];
+
+            const g = data[i + 1];
+
+            const b = data[i + 2];
 
             //--------------------------------------------------
             // START
             //--------------------------------------------------
 
-            if(colorMatch(pixel,startColor)){
+            if(colorMatch(r,g,b,startColor)){
 
                 acc.start.sumX += x;
 
@@ -166,7 +171,7 @@ function scanObjectMap(){
             // FINISH
             //--------------------------------------------------
 
-            if(colorMatch(pixel,finishColor)){
+            if(colorMatch(r,g,b,finishColor)){
 
                 acc.finish.sumX += x;
 
@@ -180,7 +185,7 @@ function scanObjectMap(){
             // PORTAL A
             //--------------------------------------------------
 
-            if(colorMatch(pixel,portalAColor)){
+            if(colorMatch(r,g,b,portalAColor)){
 
                 acc.portalA.sumX += x;
 
@@ -194,7 +199,7 @@ function scanObjectMap(){
             // PORTAL B
             //--------------------------------------------------
 
-            if(colorMatch(pixel,portalBColor)){
+            if(colorMatch(r,g,b,portalBColor)){
 
                 acc.portalB.sumX += x;
 
