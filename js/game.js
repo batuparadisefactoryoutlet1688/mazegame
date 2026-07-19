@@ -224,8 +224,6 @@ function draw() {
             break;
 
         case GAME_STATE.MENU:
-            drawMap();
-            drawButtons();
             drawStartUI();
             break;
 
@@ -240,7 +238,7 @@ function draw() {
             drawMap();
             drawFinish();
             drawRocket();
-            drawGameUI();
+            drawTimer();
             drawWinUI();
             break;
 
@@ -248,7 +246,7 @@ function draw() {
             drawMap();
             drawFinish();
             drawRocket();
-            drawGameUI();
+            drawTimer();
             drawLoseUI();
             break;
 
