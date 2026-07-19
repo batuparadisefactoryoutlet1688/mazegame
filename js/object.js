@@ -50,17 +50,6 @@ function getPixel(x, y){
 // LOAD OBJECT MAP
 //==========================================================
 
-
-    // BUG FIX: asset map*_object.png sekarang full size
-    // (1238 x 2201), BUKAN 1000 x 1000 seperti asumsi lama.
-    // Sebelumnya gambar ini di-scale paksa ke kotak maze
-    // (CONFIG.maze.width/height), padahal posisi warna start/
-    // finish/portal di dalam gambar sudah berupa koordinat
-    // canvas asli. Akibatnya semua koordinat object ikut
-    // ter-squish dan bergeser dari posisi yang seharusnya.
-    // Sekarang digambar 1:1 pakai CONFIG.map (bukan CONFIG.canvas),
-    // supaya tidak ikut berubah kalau canvas resize.
-
 function loadObjectMap(){
 
     const mapName =
@@ -114,8 +103,23 @@ function loadObjectMap(){
     );
 
 }
+
 //==========================================================
 // FIND OBJECT
+//==========================================================
+// BUG FIX: sebelumnya setiap pixel yang cocok warnanya LANGSUNG
+// menimpa GAME_DATA.xxx.x/y. Karena marker di Photoshop itu
+// gumpalan warna (bukan 1 pixel), scan (kiri->kanan, atas->bawah)
+// bakal berkali-kali "menimpa", dan yang akhirnya kesimpen adalah
+// pixel PALING KANAN-BAWAH dari gumpalan itu -> makanya posisi
+// selalu geser ke kanan-bawah dari titik tengah yang kamu pilih
+// di Photoshop.
+//
+// FIX: kumpulkan semua pixel yang cocok (sumX, sumY, count),
+// lalu di akhir dibagi rata -> hasilnya CENTROID (titik tengah)
+// gumpalan itu, otomatis sama persis dengan reference point
+// tengah yang kamu pakai di Photoshop, berapa pun ukuran
+// gumpalannya.
 //==========================================================
 
 function scanObjectMap(){
@@ -152,6 +156,22 @@ function scanObjectMap(){
 
         CONFIG.maze.areaHeight;
 
+    //------------------------------------------------------
+    // ACCUMULATOR (buat hitung centroid tiap marker)
+    //------------------------------------------------------
+
+    const acc = {
+
+        start:   { sumX: 0, sumY: 0, count: 0 },
+
+        finish:  { sumX: 0, sumY: 0, count: 0 },
+
+        portalA: { sumX: 0, sumY: 0, count: 0 },
+
+        portalB: { sumX: 0, sumY: 0, count: 0 }
+
+    };
+
     for(let y = startY; y < endY; y++){
 
         for(let x = startX; x < endX; x++){
@@ -164,10 +184,12 @@ function scanObjectMap(){
 
             if(colorMatch(pixel,startColor)){
 
- 
-        GAME_DATA.rocket.x = x - 50;
+                acc.start.sumX += x;
 
-        GAME_DATA.rocket.y = y - 37;
+                acc.start.sumY += y;
+
+                acc.start.count++;
+
             }
 
             //--------------------------------------------------
@@ -176,9 +198,11 @@ function scanObjectMap(){
 
             if(colorMatch(pixel,finishColor)){
 
-                GAME_DATA.finish.x = x;
+                acc.finish.sumX += x;
 
-                GAME_DATA.finish.y = y;
+                acc.finish.sumY += y;
+
+                acc.finish.count++;
 
             }
 
@@ -188,9 +212,11 @@ function scanObjectMap(){
 
             if(colorMatch(pixel,portalAColor)){
 
-                GAME_DATA.portalA.x = x;
+                acc.portalA.sumX += x;
 
-                GAME_DATA.portalA.y = y;
+                acc.portalA.sumY += y;
+
+                acc.portalA.count++;
 
             }
 
@@ -200,13 +226,67 @@ function scanObjectMap(){
 
             if(colorMatch(pixel,portalBColor)){
 
-                GAME_DATA.portalB.x = x;
+                acc.portalB.sumX += x;
 
-                GAME_DATA.portalB.y = y;
+                acc.portalB.sumY += y;
+
+                acc.portalB.count++;
 
             }
 
         }
+
+    }
+
+    //------------------------------------------------------
+    // HITUNG CENTROID (rata-rata) DAN SIMPAN
+    //------------------------------------------------------
+
+    if(acc.start.count > 0){
+
+        GAME_DATA.rocket.x = acc.start.sumX / acc.start.count;
+
+        GAME_DATA.rocket.y = acc.start.sumY / acc.start.count;
+
+    } else {
+
+        console.warn("START tidak ditemukan di map ini!");
+
+    }
+
+    if(acc.finish.count > 0){
+
+        GAME_DATA.finish.x = acc.finish.sumX / acc.finish.count;
+
+        GAME_DATA.finish.y = acc.finish.sumY / acc.finish.count;
+
+    } else {
+
+        console.warn("FINISH tidak ditemukan di map ini!");
+
+    }
+
+    if(acc.portalA.count > 0){
+
+        GAME_DATA.portalA.x = acc.portalA.sumX / acc.portalA.count;
+
+        GAME_DATA.portalA.y = acc.portalA.sumY / acc.portalA.count;
+
+    } else {
+
+        console.warn("PORTAL A tidak ditemukan di map ini!");
+
+    }
+
+    if(acc.portalB.count > 0){
+
+        GAME_DATA.portalB.x = acc.portalB.sumX / acc.portalB.count;
+
+        GAME_DATA.portalB.y = acc.portalB.sumY / acc.portalB.count;
+
+    } else {
+
+        console.warn("PORTAL B tidak ditemukan di map ini!");
 
     }
 
