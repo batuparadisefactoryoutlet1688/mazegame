@@ -18,11 +18,27 @@ const CONFIG = {
     },
 
     //======================================================
+    // MAP
+    // Ukuran & posisi gambar map/mask/object (1238x2201).
+    // Sengaja dipisah dari CONFIG.canvas supaya map tidak ikut
+    // bergeser kalau suatu saat ukuran canvas berubah.
+    //======================================================
+    map: {
+        width: 1238,
+        height: 2201,
+        centerX: 619,
+        centerY: 1101
+    },
+
+    //======================================================
     // MAZE
+    // areaWidth/areaHeight = luas AREA labirin di dalam map
+    // (dipakai isInsideMaze() & scanObjectMap() sebagai batas),
+    // BUKAN ukuran gambar. Jangan dipakai untuk render/drawImage.
     //======================================================
     maze: {
-        width: 1000,
-        height: 1000,
+        areaWidth: 1000,
+        areaHeight: 1000,
         centerX: 615.5,
         centerY: 1080.5
     },
@@ -41,12 +57,10 @@ const CONFIG = {
     timer: {
         startTime: 300, // 5 menit
 
-        // BUG FIX: sebelumnya properti ini tidak ada,
-        // padahal dipakai oleh drawTimer() di ui.js.
-        // Silakan sesuaikan posisi/ukuran fontnya sesuai desain kamu.
+        // BUG FIX: posisi timer dikonfirmasi sesuai desain terbaru.
         fontSize: 80,
-        centerX: 619,
-        centerY: 300
+        centerX: 898,
+        centerY: 1786
     },
 
     //======================================================
