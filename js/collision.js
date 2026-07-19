@@ -38,17 +38,25 @@ function loadMaskMap(){
 
     );
 
+    // BUG FIX: map*_mask.png sekarang full size (1238x2201),
+    // bukan 1000x1000. Sebelumnya digambar dengan ukuran
+    // CONFIG.maze.centerX/width, sehingga mask ter-squish ke
+    // kotak yang lebih kecil -> pixel yang dibaca isWalkable()
+    // jadi tidak sesuai posisi rocket yang sebenarnya (collision
+    // ikut bergeser). Sekarang digambar 1:1 pakai CONFIG.map
+    // (bukan CONFIG.canvas), konsisten dengan object.js & ui.js.
+
     ENGINE.hiddenCtx.drawImage(
 
         image,
 
-        CONFIG.maze.centerX - (CONFIG.maze.width / 2),
+        0,
 
-        CONFIG.maze.centerY - (CONFIG.maze.height / 2),
+        0,
 
-        CONFIG.maze.width,
+        CONFIG.map.width,
 
-        CONFIG.maze.height
+        CONFIG.map.height
 
     );
 
@@ -79,6 +87,20 @@ function getMaskPixel(x,y){
 //==========================================================
 
 function isWalkable(x,y){
+
+    // BUG FIX (defensif): pastikan titik yang dicek masih di
+    // dalam area maze sebelum baca pixel mask. Saat ini aman
+    // karena movement.js sudah panggil isInsideMaze() lebih dulu,
+    // tapi checkCollision() mengecek 4 titik TEPI rocket (bukan
+    // cuma titik tengah), jadi guard ini dipindah ke sini supaya
+    // isWalkable() aman dipanggil dari mana saja tanpa bergantung
+    // urutan pemanggil.
+
+    if(!isInsideMaze(x,y)){
+
+        return false;
+
+    }
 
     const pixel = getMaskPixel(x,y);
 
@@ -232,25 +254,25 @@ function isInsideMaze(x, y){
 
         CONFIG.maze.centerX -
 
-        CONFIG.maze.width / 2;
+        CONFIG.maze.areaWidth / 2;
 
     const right =
 
         CONFIG.maze.centerX +
 
-        CONFIG.maze.width / 2;
+        CONFIG.maze.areaWidth / 2;
 
     const top =
 
         CONFIG.maze.centerY -
 
-        CONFIG.maze.height / 2;
+        CONFIG.maze.areaHeight / 2;
 
     const bottom =
 
         CONFIG.maze.centerY +
 
-        CONFIG.maze.height / 2;
+        CONFIG.maze.areaHeight / 2;
 
     return (
 
