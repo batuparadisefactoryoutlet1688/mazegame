@@ -35,16 +35,24 @@ function drawImageCenter(image, centerX, centerY, width, height) {
 
 function drawMap() {
 
+    // BUG FIX: map*.png sekarang full size (1238x2201), bukan
+    // 1000x1000. Sebelumnya digambar dengan ukuran
+    // CONFIG.maze.width/height, sehingga seluruh gambar
+    // ter-squish ke kotak yang lebih kecil (background, header,
+    // panel bawah, dsb ikut mengecil/bergeser). Sekarang
+    // digambar 1:1 pakai CONFIG.map (bukan CONFIG.canvas), supaya
+    // ukuran/posisi map tidak ikut berubah kalau canvas resize.
+
     const map = ASSETS.maps["map" + GAME_DATA.currentMap];
 
     if (!map) return;
 
     drawImageCenter(
         map,
-        CONFIG.maze.centerX,
-        CONFIG.maze.centerY,
-        CONFIG.maze.width,
-        CONFIG.maze.height
+        CONFIG.map.centerX,
+        CONFIG.map.centerY,
+        CONFIG.map.width,
+        CONFIG.map.height
     );
 
 }
