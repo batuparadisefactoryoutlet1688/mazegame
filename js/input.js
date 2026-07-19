@@ -61,6 +61,20 @@ const BUTTON = {
 };
 
 //==========================================================
+// CLICK SOUND
+// (FITUR BARU: bunyi klik saat tombol arah ditekan)
+//==========================================================
+
+function playClickSound() {
+
+    if (ASSETS.sound.click) {
+        ASSETS.sound.click.currentTime = 0;
+        ASSETS.sound.click.play();
+    }
+
+}
+
+//==========================================================
 // RESET INPUT
 //==========================================================
 
@@ -168,6 +182,10 @@ function touchStart(event) {
     if (insideButton(pos.x, pos.y, BUTTON.left)) INPUT.left = true;
     if (insideButton(pos.x, pos.y, BUTTON.right)) INPUT.right = true;
 
+    if (INPUT.up || INPUT.down || INPUT.left || INPUT.right) {
+        playClickSound();
+    }
+
 }
 
 //==========================================================
@@ -218,6 +236,10 @@ function mouseDown(event) {
     if (insideButton(pos.x, pos.y, BUTTON.down)) INPUT.down = true;
     if (insideButton(pos.x, pos.y, BUTTON.left)) INPUT.left = true;
     if (insideButton(pos.x, pos.y, BUTTON.right)) INPUT.right = true;
+
+    if (INPUT.up || INPUT.down || INPUT.left || INPUT.right) {
+        playClickSound();
+    }
 
 }
 
