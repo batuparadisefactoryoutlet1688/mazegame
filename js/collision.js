@@ -38,14 +38,6 @@ function loadMaskMap(){
 
     );
 
-    // BUG FIX: map*_mask.png sekarang full size (1238x2201),
-    // bukan 1000x1000. Sebelumnya digambar dengan ukuran
-    // CONFIG.maze.centerX/width, sehingga mask ter-squish ke
-    // kotak yang lebih kecil -> pixel yang dibaca isWalkable()
-    // jadi tidak sesuai posisi rocket yang sebenarnya (collision
-    // ikut bergeser). Sekarang digambar 1:1 pakai CONFIG.map
-    // (bukan CONFIG.canvas), konsisten dengan object.js & ui.js.
-
     ENGINE.hiddenCtx.drawImage(
 
         image,
@@ -94,12 +86,6 @@ function isWalkable(x,y){
 
     if(!isInsideMaze(x,y)){
 
-        console.log(
-            "OUTSIDE MAZE",
-            Math.round(x),
-            Math.round(y)
-        );
-
         return false;
 
     }
@@ -109,15 +95,6 @@ function isWalkable(x,y){
     //======================================================
 
     const pixel = getMaskPixel(x,y);
-
-    console.log(
-        "MASK",
-        Math.round(x),
-        Math.round(y),
-        pixel[0],
-        pixel[1],
-        pixel[2]
-    );
 
     //======================================================
     // WALKABLE
@@ -134,17 +111,12 @@ function isWalkable(x,y){
     );
 
 }
+
 //==========================================================
 // CHECK COLLISION
 //==========================================================
 
 function checkCollision(nextX,nextY){
-
-    console.log(
-        "CHECK COLLISION =>",
-        "nextX:", nextX,
-        "nextY:", nextY
-    );
 
     const halfW =
         GAME_DATA.rocket.width / 2;
@@ -163,8 +135,6 @@ function checkCollision(nextX,nextY){
         )
     ){
 
-        console.log("BLOCK : TOP");
-
         return false;
 
     }
@@ -179,8 +149,6 @@ function checkCollision(nextX,nextY){
             nextY+halfH
         )
     ){
-
-        console.log("BLOCK : BOTTOM");
 
         return false;
 
@@ -197,8 +165,6 @@ function checkCollision(nextX,nextY){
         )
     ){
 
-        console.log("BLOCK : LEFT");
-
         return false;
 
     }
@@ -214,13 +180,9 @@ function checkCollision(nextX,nextY){
         )
     ){
 
-        console.log("BLOCK : RIGHT");
-
         return false;
 
     }
-
-    console.log("COLLISION OK");
 
     return true;
 
@@ -342,18 +304,6 @@ function checkPortal(){
         GAME_DATA.portalA.x,
         GAME_DATA.portalA.y
 
-    );
-
-    console.log(
-        "PORTAL",
-        "rocket",
-        GAME_DATA.rocket.x,
-        GAME_DATA.rocket.y,
-        "portal",
-        GAME_DATA.portalA.x,
-        GAME_DATA.portalA.y,
-        "distance",
-        d
     );
 
     return (
