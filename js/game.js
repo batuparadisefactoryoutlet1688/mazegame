@@ -133,41 +133,50 @@ function updateLoading() {
 
 //==========================================================
 // START GAME
-// FITUR BARU: sebelumnya tidak ada fungsi untuk memulai game dari
-// layar menu. Dipanggil dari input.js saat pemain tap layar MENU.
+// FITUR BARU: dipanggil dari input.js saat pemain tap layar MENU.
+//
+// BUG FIX PENTING: sebelumnya urutannya randomMap() -> readObjectMap()
+// -> startGameData(). Padahal startGameData() (di gameData.js) DI
+// DALAMNYA juga memanggil resetGameData() + randomMap() lagi -> posisi
+// rocket & finish yang baru saja dibaca readObjectMap() jadi ketimpa
+// balik ke (0,0), sehingga jarak rocket-ke-finish langsung 0 dan
+// checkFinish() otomatis true -> auto "menang" begitu game dimulai.
+//
+// Urutan yang benar: reset & pilih map dulu (lewat startGameData()),
+// BARU baca posisi start/finish/portal untuk map yang sudah fix itu.
 //==========================================================
 
 function startGame() {
 
-    randomMap();
-    readObjectMap();
     startGameData();
+    readObjectMap();
 
     changeState(GAME_STATE.PLAYING);
 
 }
 
 //==========================================================
-// RESTART GAME
-// FITUR BARU: dipanggil dari input.js saat pemain tap layar
-// WIN / LOSE. Untuk saat ini perilakunya sama seperti startGame()
-// (map baru dipilih random lagi setiap kali main).
-//==========================================================
-
-function restartGame() {
-
-    startGame();
-
-}
-
-//==========================================================
-// RESET GAME (kembali ke menu tanpa langsung main)
+// RESET GAME (kembali ke menu, layar start.png)
 //==========================================================
 
 function resetGame() {
 
     resetGameData();
     changeState(GAME_STATE.MENU);
+
+}
+
+//==========================================================
+// RESTART GAME
+// Dipanggil dari input.js saat pemain tap layar WIN / LOSE.
+// Sesuai request: setelah menang/kalah, tap popup -> KEMBALI KE
+// START SCREEN dulu (bukan langsung main lagi). Untuk main lagi,
+// pemain tap start screen seperti biasa (memanggil startGame()).
+//==========================================================
+
+function restartGame() {
+
+    resetGame();
 
 }
 
