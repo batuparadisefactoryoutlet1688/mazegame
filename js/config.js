@@ -20,7 +20,7 @@ const CONFIG = {
     //======================================================
     // MAP
     // Ukuran & posisi gambar map/mask/object (1238x2201).
-    // Sengaja dipisah dari CONFIG.canvas supaya map tidak ikut
+    // Sengaja dipisah dari CONFIG.canvas supaya map tidak ikut.
     // bergeser kalau suatu saat ukuran canvas berubah.
     //======================================================
     map: {
