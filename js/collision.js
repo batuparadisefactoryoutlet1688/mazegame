@@ -334,69 +334,31 @@ function checkFinish(){
 
 function checkPortal(){
 
-    console.log("CHECK PORTAL");
-
-    if(GAME_DATA.portalUsed){
-
-        console.log("PORTAL SUDAH DIGUNAKAN");
-
-        return false;
-
-    }
-
     const d = distance(
 
         GAME_DATA.rocket.x,
-
         GAME_DATA.rocket.y,
 
         GAME_DATA.portalA.x,
-
         GAME_DATA.portalA.y
 
     );
 
     console.log(
-
-        "ROCKET :",
-
+        "PORTAL",
+        "rocket",
         GAME_DATA.rocket.x,
-
-        GAME_DATA.rocket.y
-
-    );
-
-    console.log(
-
-        "PORTAL A :",
-
+        GAME_DATA.rocket.y,
+        "portal",
         GAME_DATA.portalA.x,
-
-        GAME_DATA.portalA.y
-
-    );
-
-    console.log(
-
-        "DISTANCE :",
-
+        GAME_DATA.portalA.y,
+        "distance",
         d
-
     );
 
-    if(
-
-        d <= 50
-
-    ){
-
-        console.log("MASUK PORTAL");
-
-        return true;
-
-    }
-
-    return false;
+    return (
+        d <= GAME_DATA.rocket.width / 2
+    );
 
 }
 
