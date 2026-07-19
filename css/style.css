@@ -1,0 +1,110 @@
+/*
+==========================================================
+SPACE MAZE
+Version : 1.0
+File    : style.css
+==========================================================
+*/
+
+/*==========================================================
+  FONT
+==========================================================*/
+
+@font-face {
+    font-family: "Orbitron";
+    src: url("../assets/fonts/Orbitron-VariableFont_wght.ttf") format("truetype");
+    font-weight: 400 900; /* variable font, mendukung banyak weight */
+    font-style: normal;
+    font-display: swap;
+}
+
+/*==========================================================
+  RESET
+==========================================================*/
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/*==========================================================
+  FULLSCREEN + BACKGROUND HITAM
+==========================================================*/
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    overflow: hidden;
+    font-family: "Orbitron", sans-serif;
+}
+
+/*==========================================================
+  CENTER CANVAS
+==========================================================*/
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+canvas {
+    display: block;
+
+    /* Canvas asli berukuran 1238 x 2201 (portrait),
+       di-scale supaya selalu muat di layar tanpa distorsi rasio */
+    max-width: 100vw;
+    max-height: 100vh;
+    width: auto;
+    height: auto;
+    aspect-ratio: 1238 / 2201;
+}
+
+/*==========================================================
+  TOUCH ACTION NONE
+  (mencegah scroll/zoom/pull-to-refresh saat main di HP)
+==========================================================*/
+
+html, body, canvas {
+    touch-action: none;
+    -ms-touch-action: none;
+    overscroll-behavior: none;
+}
+
+/*==========================================================
+  USER SELECT NONE
+  (mencegah teks/gambar ke-select saat tap-tap cepat)
+==========================================================*/
+
+html, body, canvas {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/*==========================================================
+  RESPONSIVE
+==========================================================*/
+
+/* Landscape / layar lebar: batasi lebar canvas mengikuti tinggi,
+   supaya tidak melebar aneh di desktop/tablet horizontal */
+@media (orientation: landscape) {
+    canvas {
+        height: 100vh;
+        width: auto;
+    }
+}
+
+/* Portrait / HP: batasi tinggi canvas mengikuti lebar layar */
+@media (orientation: portrait) {
+    canvas {
+        width: 100vw;
+        height: auto;
+    }
+}

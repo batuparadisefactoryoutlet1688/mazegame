@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Space Maze</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+    <!--
+        Canvas dibuat secara dinamis lewat JS (lihat createCanvas()
+        di game.js), jadi <body> memang sengaja kosong.
+    -->
+
+    <!--========================================================
+        JS
+        Urutan ini WAJIB seperti ini, karena file belakang
+        bergantung pada variabel/fungsi dari file sebelumnya.
+    ========================================================-->
+
+    <!-- 1. Konfigurasi dasar & data game, harus paling awal -->
+    <script src="js/config.js"></script>
+    <script src="js/gameData.js"></script>
+
+    <!-- 2. Asset & scanning object map -->
+    <script src="js/loader.js"></script>
+    <script src="js/object.js"></script>
+
+    <!-- 3. Engine gameplay -->
+    <script src="js/collision.js"></script>
+    <script src="js/movement.js"></script>
+    <script src="js/event.js"></script>
+    <script src="js/timer.js"></script>
+
+    <!-- 4. Tampilan -->
+    <script src="js/ui.js"></script>
+
+    <!-- 5. Input (butuh CONFIG.button + GAME_STATE + startGame/restartGame) -->
+    <script src="js/input.js"></script>
+
+    <!-- 6. Game state & flow -->
+    <script src="js/game.js"></script>
+
+    <!-- 7. Entry point, paling akhir -->
+    <script src="js/main.js"></script>
+
+</body>
+</html>

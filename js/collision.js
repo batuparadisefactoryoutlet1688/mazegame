@@ -1,0 +1,357 @@
+/*
+==========================================================
+SPACE MAZE ENGINE
+Version : 1.0
+File    : collision.js
+==========================================================
+*/
+
+"use strict";
+
+//==========================================================
+// LOAD MASK
+//==========================================================
+
+function loadMaskMap(){
+
+    const image =
+
+        ASSETS.maps[
+
+            "map" +
+
+            GAME_DATA.currentMap +
+
+            "_mask"
+
+        ];
+
+    ENGINE.hiddenCtx.clearRect(
+
+        0,
+
+        0,
+
+        ENGINE.hiddenCanvas.width,
+
+        ENGINE.hiddenCanvas.height
+
+    );
+
+    ENGINE.hiddenCtx.drawImage(
+
+        image,
+
+        CONFIG.maze.centerX - (CONFIG.maze.width / 2),
+
+        CONFIG.maze.centerY - (CONFIG.maze.height / 2),
+
+        CONFIG.maze.width,
+
+        CONFIG.maze.height
+
+    );
+
+}
+
+//==========================================================
+// GET MASK PIXEL
+//==========================================================
+
+function getMaskPixel(x,y){
+
+    return ENGINE.hiddenCtx.getImageData(
+
+        Math.round(x),
+
+        Math.round(y),
+
+        1,
+
+        1
+
+    ).data;
+
+}
+
+//==========================================================
+// IS WALKABLE
+//==========================================================
+
+function isWalkable(x,y){
+
+    const pixel = getMaskPixel(x,y);
+
+    return (
+
+        pixel[0] > 250 &&
+
+        pixel[1] > 250 &&
+
+        pixel[2] > 250
+
+    );
+
+}
+
+//==========================================================
+// CHECK COLLISION
+//==========================================================
+
+function checkCollision(nextX,nextY){
+
+    const halfW =
+
+        GAME_DATA.rocket.width / 2;
+
+    const halfH =
+
+        GAME_DATA.rocket.height / 2;
+
+    //------------------------------------------------------
+    // TOP
+    //------------------------------------------------------
+
+    if(
+
+        !isWalkable(
+
+            nextX,
+
+            nextY-halfH
+
+        )
+
+    ){
+
+        return false;
+
+    }
+
+    //------------------------------------------------------
+    // BOTTOM
+    //------------------------------------------------------
+
+    if(
+
+        !isWalkable(
+
+            nextX,
+
+            nextY+halfH
+
+        )
+
+    ){
+
+        return false;
+
+    }
+
+    //------------------------------------------------------
+    // LEFT
+    //------------------------------------------------------
+
+    if(
+
+        !isWalkable(
+
+            nextX-halfW,
+
+            nextY
+
+        )
+
+    ){
+
+        return false;
+
+    }
+
+    //------------------------------------------------------
+    // RIGHT
+    //------------------------------------------------------
+
+    if(
+
+        !isWalkable(
+
+            nextX+halfW,
+
+            nextY
+
+        )
+
+    ){
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+//==========================================================
+// UPDATE MASK
+//==========================================================
+
+function updateMask(){
+
+    loadMaskMap();
+
+}
+
+//==========================================================
+// DISTANCE
+//==========================================================
+
+function distance(x1, y1, x2, y2){
+
+    const dx = x2 - x1;
+
+    const dy = y2 - y1;
+
+    return Math.sqrt(
+
+        dx * dx +
+
+        dy * dy
+
+    );
+
+}
+
+//==========================================================
+// INSIDE MAZE
+//==========================================================
+
+function isInsideMaze(x, y){
+
+    const left =
+
+        CONFIG.maze.centerX -
+
+        CONFIG.maze.width / 2;
+
+    const right =
+
+        CONFIG.maze.centerX +
+
+        CONFIG.maze.width / 2;
+
+    const top =
+
+        CONFIG.maze.centerY -
+
+        CONFIG.maze.height / 2;
+
+    const bottom =
+
+        CONFIG.maze.centerY +
+
+        CONFIG.maze.height / 2;
+
+    return (
+
+        x >= left &&
+
+        x <= right &&
+
+        y >= top &&
+
+        y <= bottom
+
+    );
+
+}
+
+//==========================================================
+// CHECK FINISH
+//==========================================================
+
+function checkFinish(){
+
+    const d = distance(
+
+        GAME_DATA.rocket.x,
+
+        GAME_DATA.rocket.y,
+
+        GAME_DATA.finish.x,
+
+        GAME_DATA.finish.y
+
+    );
+
+    return (
+
+        d <=
+
+        GAME_DATA.rocket.width / 2
+
+    );
+
+}
+
+//==========================================================
+// CHECK PORTAL
+//==========================================================
+
+function checkPortal(){
+
+    if(GAME_DATA.portalUsed){
+
+        return false;
+
+    }
+
+    const d = distance(
+
+        GAME_DATA.rocket.x,
+
+        GAME_DATA.rocket.y,
+
+        GAME_DATA.portalA.x,
+
+        GAME_DATA.portalA.y
+
+    );
+
+    return (
+
+        d <=
+
+        GAME_DATA.rocket.width / 2
+
+    );
+
+}
+
+//==========================================================
+// TELEPORT
+//==========================================================
+
+function teleportRocket(){
+
+    GAME_DATA.rocket.x =
+
+        GAME_DATA.portalB.x;
+
+    GAME_DATA.rocket.y =
+
+        GAME_DATA.portalB.y;
+
+    GAME_DATA.portalUsed = true;
+
+}
+
+//==========================================================
+// RESET PORTAL
+//==========================================================
+
+function resetPortal(){
+
+    GAME_DATA.portalUsed = false;
+
+}
