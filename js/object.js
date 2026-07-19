@@ -50,17 +50,40 @@ function getPixel(x, y){
 // LOAD OBJECT MAP
 //==========================================================
 
+
+    // BUG FIX: asset map*_object.png sekarang full size
+    // (1238 x 2201), BUKAN 1000 x 1000 seperti asumsi lama.
+    // Sebelumnya gambar ini di-scale paksa ke kotak maze
+    // (CONFIG.maze.width/height), padahal posisi warna start/
+    // finish/portal di dalam gambar sudah berupa koordinat
+    // canvas asli. Akibatnya semua koordinat object ikut
+    // ter-squish dan bergeser dari posisi yang seharusnya.
+    // Sekarang digambar 1:1 pakai CONFIG.map (bukan CONFIG.canvas),
+    // supaya tidak ikut berubah kalau canvas resize.
+
 function loadObjectMap(){
+
+    const mapName =
+
+        "map" +
+
+        GAME_DATA.currentMap +
+
+        "_object";
+
+    console.log(
+
+        "LOAD OBJECT MAP :",
+
+        mapName
+
+    );
 
     const image =
 
         ASSETS.maps[
 
-            "map" +
-
-            GAME_DATA.currentMap +
-
-            "_object"
+            mapName
 
         ];
 
@@ -75,16 +98,6 @@ function loadObjectMap(){
         ENGINE.hiddenCanvas.height
 
     );
-
-    // BUG FIX: asset map*_object.png sekarang full size
-    // (1238 x 2201), BUKAN 1000 x 1000 seperti asumsi lama.
-    // Sebelumnya gambar ini di-scale paksa ke kotak maze
-    // (CONFIG.maze.width/height), padahal posisi warna start/
-    // finish/portal di dalam gambar sudah berupa koordinat
-    // canvas asli. Akibatnya semua koordinat object ikut
-    // ter-squish dan bergeser dari posisi yang seharusnya.
-    // Sekarang digambar 1:1 pakai CONFIG.map (bukan CONFIG.canvas),
-    // supaya tidak ikut berubah kalau canvas resize.
 
     ENGINE.hiddenCtx.drawImage(
 
@@ -101,7 +114,6 @@ function loadObjectMap(){
     );
 
 }
-
 //==========================================================
 // FIND OBJECT
 //==========================================================
