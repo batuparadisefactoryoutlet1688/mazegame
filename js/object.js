@@ -152,10 +152,10 @@ function scanObjectMap(){
 
             if(colorMatch(pixel,startColor)){
 
-                GAME_DATA.rocket.x = x;
+ 
+        GAME_DATA.rocket.x = x - 50;
 
-                GAME_DATA.rocket.y = y;
-
+        GAME_DATA.rocket.y = y - 37;
             }
 
             //--------------------------------------------------
