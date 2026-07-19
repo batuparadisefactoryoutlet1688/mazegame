@@ -60,14 +60,6 @@ function loadObjectMap(){
 
         "_object";
 
-    console.log(
-
-        "LOAD OBJECT MAP :",
-
-        mapName
-
-    );
-
     const image =
 
         ASSETS.maps[
@@ -107,19 +99,13 @@ function loadObjectMap(){
 //==========================================================
 // FIND OBJECT
 //==========================================================
-// BUG FIX: sebelumnya setiap pixel yang cocok warnanya LANGSUNG
-// menimpa GAME_DATA.xxx.x/y. Karena marker di Photoshop itu
-// gumpalan warna (bukan 1 pixel), scan (kiri->kanan, atas->bawah)
-// bakal berkali-kali "menimpa", dan yang akhirnya kesimpen adalah
-// pixel PALING KANAN-BAWAH dari gumpalan itu -> makanya posisi
-// selalu geser ke kanan-bawah dari titik tengah yang kamu pilih
-// di Photoshop.
+// Scan SELURUH gambar (0,0 sampai CONFIG.map.width/height),
+// tidak lagi dibatasi kotak maze -> marker boleh diletakkan di
+// mana saja dan ukuran berapa saja.
 //
-// FIX: kumpulkan semua pixel yang cocok (sumX, sumY, count),
-// lalu di akhir dibagi rata -> hasilnya CENTROID (titik tengah)
-// gumpalan itu, otomatis sama persis dengan reference point
-// tengah yang kamu pakai di Photoshop, berapa pun ukuran
-// gumpalannya.
+// Posisi tiap marker dihitung pakai CENTROID (rata-rata semua
+// pixel yang cocok warnanya), lalu dibulatkan (Math.round) supaya
+// hasilnya selalu integer, konsisten dengan koordinat pixel lain.
 //==========================================================
 
 function scanObjectMap(){
@@ -132,29 +118,13 @@ function scanObjectMap(){
 
     const portalBColor = CONFIG.objectColor.portalB;
 
-    const startX =
+    const startX = 0;
 
-        CONFIG.maze.centerX -
+    const startY = 0;
 
-        CONFIG.maze.areaWidth / 2;
+    const endX = CONFIG.map.width;
 
-    const startY =
-
-        CONFIG.maze.centerY -
-
-        CONFIG.maze.areaHeight / 2;
-
-    const endX =
-
-        startX +
-
-        CONFIG.maze.areaWidth;
-
-    const endY =
-
-        startY +
-
-        CONFIG.maze.areaHeight;
+    const endY = CONFIG.map.height;
 
     //------------------------------------------------------
     // ACCUMULATOR (buat hitung centroid tiap marker)
@@ -239,14 +209,14 @@ function scanObjectMap(){
     }
 
     //------------------------------------------------------
-    // HITUNG CENTROID (rata-rata) DAN SIMPAN
+    // HITUNG CENTROID (dibulatkan) DAN SIMPAN
     //------------------------------------------------------
 
     if(acc.start.count > 0){
 
-        GAME_DATA.rocket.x = acc.start.sumX / acc.start.count;
+        GAME_DATA.rocket.x = Math.round(acc.start.sumX / acc.start.count);
 
-        GAME_DATA.rocket.y = acc.start.sumY / acc.start.count;
+        GAME_DATA.rocket.y = Math.round(acc.start.sumY / acc.start.count);
 
     } else {
 
@@ -256,9 +226,9 @@ function scanObjectMap(){
 
     if(acc.finish.count > 0){
 
-        GAME_DATA.finish.x = acc.finish.sumX / acc.finish.count;
+        GAME_DATA.finish.x = Math.round(acc.finish.sumX / acc.finish.count);
 
-        GAME_DATA.finish.y = acc.finish.sumY / acc.finish.count;
+        GAME_DATA.finish.y = Math.round(acc.finish.sumY / acc.finish.count);
 
     } else {
 
@@ -268,9 +238,9 @@ function scanObjectMap(){
 
     if(acc.portalA.count > 0){
 
-        GAME_DATA.portalA.x = acc.portalA.sumX / acc.portalA.count;
+        GAME_DATA.portalA.x = Math.round(acc.portalA.sumX / acc.portalA.count);
 
-        GAME_DATA.portalA.y = acc.portalA.sumY / acc.portalA.count;
+        GAME_DATA.portalA.y = Math.round(acc.portalA.sumY / acc.portalA.count);
 
     } else {
 
@@ -280,23 +250,15 @@ function scanObjectMap(){
 
     if(acc.portalB.count > 0){
 
-        GAME_DATA.portalB.x = acc.portalB.sumX / acc.portalB.count;
+        GAME_DATA.portalB.x = Math.round(acc.portalB.sumX / acc.portalB.count);
 
-        GAME_DATA.portalB.y = acc.portalB.sumY / acc.portalB.count;
+        GAME_DATA.portalB.y = Math.round(acc.portalB.sumY / acc.portalB.count);
 
     } else {
 
         console.warn("PORTAL B tidak ditemukan di map ini!");
 
     }
-
-    console.log("START :",GAME_DATA.rocket);
-
-    console.log("FINISH :",GAME_DATA.finish);
-
-    console.log("PORTAL A :",GAME_DATA.portalA);
-
-    console.log("PORTAL B :",GAME_DATA.portalB);
 
 }
 
