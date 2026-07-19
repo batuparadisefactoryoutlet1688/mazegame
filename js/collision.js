@@ -88,39 +88,52 @@ function getMaskPixel(x,y){
 
 function isWalkable(x,y){
 
-    // BUG FIX (defensif): pastikan titik yang dicek masih di
-    // dalam area maze sebelum baca pixel mask. Saat ini aman
-    // karena movement.js sudah panggil isInsideMaze() lebih dulu,
-    // tapi checkCollision() mengecek 4 titik TEPI rocket (bukan
-    // cuma titik tengah), jadi guard ini dipindah ke sini supaya
-    // isWalkable() aman dipanggil dari mana saja tanpa bergantung
-    // urutan pemanggil.
+    //======================================================
+    // AREA MAZE CHECK
+    //======================================================
 
     if(!isInsideMaze(x,y)){
+
+        console.log(
+            "OUTSIDE MAZE",
+            Math.round(x),
+            Math.round(y)
+        );
 
         return false;
 
     }
 
-const pixel = getMaskPixel(x,y);
+    //======================================================
+    // READ MASK PIXEL
+    //======================================================
 
-console.log(
-    "MASK",
-    Math.round(x),
-    Math.round(y),
-    pixel[0],
-    pixel[1],
-    pixel[2]
-);
+    const pixel = getMaskPixel(x,y);
 
-return (
-    pixel[0] > 250 &&
-    pixel[1] > 250 &&
-    pixel[2] > 250
-);
+    console.log(
+        "MASK",
+        Math.round(x),
+        Math.round(y),
+        pixel[0],
+        pixel[1],
+        pixel[2]
+    );
+
+    //======================================================
+    // WALKABLE
+    //======================================================
+
+    return (
+
+        pixel[0] > 250 &&
+
+        pixel[1] > 250 &&
+
+        pixel[2] > 250
+
+    );
 
 }
-
 //==========================================================
 // CHECK COLLISION
 //==========================================================
